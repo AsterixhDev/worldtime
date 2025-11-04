@@ -35,7 +35,7 @@ const CachedCountryList = ({ countries, className = '' }: CachedCountryListProps
   };
 
   const handleCountryClick = (country: CachedCountry) => {
-    navigate('/country-timezone-details', { 
+    navigate(`/country-timezone-details?country=${country.name.toLowerCase()}`, { 
       state: { 
         country: {
           name: country.name,

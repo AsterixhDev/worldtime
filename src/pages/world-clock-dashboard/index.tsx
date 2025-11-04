@@ -158,7 +158,7 @@ const WorldClockDashboard = () => {
 
   const handleCountrySelect = (country: Country) => {
     setState(prev => ({ ...prev, selectedCountry: country }));
-    navigate(`/country-timezone-details?country=${country.code}`, { state: { country } });
+    navigate(`/country-timezone-details?country=${country.name.toLowerCase()}`, { state: { country } });
   };
 
   const handleSearchResultSelect = (result: SearchResult) => {
