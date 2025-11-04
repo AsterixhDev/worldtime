@@ -20,7 +20,6 @@
     "noUnusedParameters": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "ignoreDeprecations": "6.0",
     "baseUrl": "src",
     "paths": {
       "components/*": ["components/*"]
