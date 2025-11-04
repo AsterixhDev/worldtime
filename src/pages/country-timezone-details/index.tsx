@@ -67,12 +67,13 @@ const CountryTimezoneDetails = () => {
               });
             });
 
+
             // Use reverse geocoding to get country code from coordinates
             const response = await fetch(
               `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`
             );
             const locationData = await response.json();
-            countryCode = locationData.countryCode?.toUpperCase();
+              console.log(locationData)
           } catch (geoError) {
             throw new Error("No country code provided and unable to determine location. Please provide a country code or allow location access.");
           }
