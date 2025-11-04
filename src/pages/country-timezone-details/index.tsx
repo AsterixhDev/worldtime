@@ -134,7 +134,7 @@ const CountryTimezoneDetails = () => {
     return (
       <>
         <Helmet>
-          <title>Loading Timezone Details - WorldTime Pro</title>
+          <title>Loading Timezone Details - TerraTemps</title>
           <meta
             name="description"
             content="Loading detailed timezone information for the selected country"
@@ -155,7 +155,7 @@ const CountryTimezoneDetails = () => {
     return (
       <>
         <Helmet>
-          <title>Error Loading Timezone Details - WorldTime Pro</title>
+          <title>Error Loading Timezone Details - TerraTemps</title>
           <meta
             name="description"
             content="Error occurred while loading timezone information"
@@ -176,7 +176,7 @@ const CountryTimezoneDetails = () => {
     return (
       <>
         <Helmet>
-          <title>Country Not Found - WorldTime Pro</title>
+          <title>Country Not Found - TerraTemps</title>
           <meta
             name="description"
             content="The requested country timezone information could not be found"
@@ -196,7 +196,7 @@ const CountryTimezoneDetails = () => {
   return (
     <>
       <Helmet>
-        <title>{countryData.name} Timezone Details - WorldTime Pro</title>
+        <title>{countryData.name} Timezone Details - TerraTemps</title>
         <meta
           name="description"
           content={`Detailed timezone information for ${countryData.name} including ${countryData.totalTimezones} different time zones across all regions and states`}

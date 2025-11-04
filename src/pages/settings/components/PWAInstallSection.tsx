@@ -6,6 +6,7 @@ import Button from 'components/ui/Button';
 const PWAInstallSection = ({ onInstallClick, isInstallable, isInstalled }: PWAInstallProps) => {
   const [platform, setPlatform] = useState<string>('');
   const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [canInstall, setCanInstall] = useState<boolean>(false);
 
   useEffect(() => {
     // Detect platform
@@ -22,27 +23,74 @@ const PWAInstallSection = ({ onInstallClick, isInstallable, isInstalled }: PWAIn
       setPlatform('Desktop');
     }
 
+    // Check if already installed
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const isInWebAppiOS = (window.navigator as any).standalone === true;
+
+    if (isStandalone || isInWebAppiOS) {
+      // Already installed
+      return;
+    }
+
     // Listen for PWA install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setInstallPrompt(e);
+      setCanInstall(true);
+    };
+
+    // Check if the app can be installed (for browsers that don't fire beforeinstallprompt)
+    const checkInstallability = () => {
+      // For iOS Safari, check if it's not already in standalone mode
+      if (platform === 'iOS' && !(window.navigator as any).standalone) {
+        setCanInstall(true);
+      }
+      // For other platforms, we'll rely on the beforeinstallprompt event
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    
+    checkInstallability();
+
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
-  }, []);
+  }, [platform]);
 
   const handleInstall = async () => {
-    if (installPrompt) {
-      installPrompt.prompt();
-      const { outcome } = await installPrompt.userChoice;
-      if (outcome === 'accepted') {
-        setInstallPrompt(null);
+    try {
+      if (installPrompt) {
+        // Show the install prompt
+        installPrompt.prompt();
+
+        // Wait for the user's response
+        const { outcome } = await installPrompt.userChoice;
+
+        if (outcome === 'accepted') {
+          console.log('User accepted the install prompt');
+          setInstallPrompt(null);
+          // The app should be installed now
+        } else {
+          console.log('User dismissed the install prompt');
+        }
+      } else {
+        // Fallback: try to trigger install manually or show instructions
+        console.log('No install prompt available, showing manual instructions');
+
+        // For browsers that don't support beforeinstallprompt (like iOS Safari),
+        // we can't programmatically trigger install, so we show instructions
+        if (platform === 'iOS') {
+          alert('To install on iOS: Tap the Share button, then "Add to Home Screen"');
+        } else if (platform === 'Android') {
+          alert('To install on Android: Tap the menu button (⋮), then "Add to Home Screen" or "Install App"');
+        } else {
+          alert('Installation prompt not available. Try using your browser\'s install option or check the instructions below.');
+        }
       }
+    } catch (error) {
+      console.error('Install failed:', error);
+      alert('Installation failed. Please try again or use manual installation instructions.');
     }
+
     onInstallClick();
   };
 
@@ -115,13 +163,13 @@ const PWAInstallSection = ({ onInstallClick, isInstallable, isInstalled }: PWAIn
           <div className="space-y-3">
             <Button
               onClick={handleInstall}
-              disabled={!isInstallable && !installPrompt}
+              disabled={!canInstall && !installPrompt}
               className="w-full"
               size="lg"
               iconName="Download"
               iconPosition="left"
             >
-              {isInstallable || installPrompt ? 'Install to Device' : 'Installation Not Available'}
+              {canInstall || installPrompt ? 'Install to Device' : 'Installation Not Available'}
             </Button>
             
             <div className="p-3 bg-muted rounded-lg">
