@@ -15,6 +15,7 @@ import {
   GeolocationData,
   SearchResult,
 } from "./types";
+import { loadCountriesFromCache } from 'utils/restCountries';
 import Navbar from "components/ui/Navbar";
 
 const OfflineModePage = () => {
@@ -32,94 +33,35 @@ const OfflineModePage = () => {
     isExpired: false,
   });
 
-  const [cachedCountries] = useState<CachedCountry[]>([
-    {
-      id: "1",
-      name: "United States",
-      flag: "🇺🇸",
-      timezone: "America/New_York",
-      utcOffset: "UTC-5",
-      currentTime: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-      lastUpdated: new Date(Date.now() - 3600000),
-      regions: [
-        {
-          id: "1-1",
-          name: "Eastern Time",
-          timezone: "America/New_York",
-          utcOffset: "UTC-5",
-          currentTime: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-        },
-        {
-          id: "1-2",
-          name: "Pacific Time",
-          timezone: "America/Los_Angeles",
-          utcOffset: "UTC-8",
-          currentTime: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-        },
-      ],
-    },
-    {
-      id: "2",
-      name: "United Kingdom",
-      flag: "🇬🇧",
-      timezone: "Europe/London",
-      utcOffset: "UTC+0",
-      currentTime: new Date().toISOString(),
-      lastUpdated: new Date(Date.now() - 3600000),
-    },
-    {
-      id: "3",
-      name: "Japan",
-      flag: "🇯🇵",
-      timezone: "Asia/Tokyo",
-      utcOffset: "UTC+9",
-      currentTime: new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString(),
-      lastUpdated: new Date(Date.now() - 3600000),
-    },
-    {
-      id: "4",
-      name: "Australia",
-      flag: "🇦🇺",
-      timezone: "Australia/Sydney",
-      utcOffset: "UTC+11",
-      currentTime: new Date(Date.now() + 11 * 60 * 60 * 1000).toISOString(),
-      lastUpdated: new Date(Date.now() - 3600000),
-      regions: [
-        {
-          id: "4-1",
-          name: "Sydney",
-          timezone: "Australia/Sydney",
-          utcOffset: "UTC+11",
-          currentTime: new Date(Date.now() + 11 * 60 * 60 * 1000).toISOString(),
-        },
-        {
-          id: "4-2",
-          name: "Perth",
-          timezone: "Australia/Perth",
-          utcOffset: "UTC+8",
-          currentTime: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString(),
-        },
-      ],
-    },
-    {
-      id: "5",
-      name: "Germany",
-      flag: "🇩🇪",
-      timezone: "Europe/Berlin",
-      utcOffset: "UTC+1",
-      currentTime: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
-      lastUpdated: new Date(Date.now() - 3600000),
-    },
-    {
-      id: "6",
-      name: "India",
-      flag: "🇮🇳",
-      timezone: "Asia/Kolkata",
-      utcOffset: "UTC+5:30",
-      currentTime: new Date(Date.now() + 5.5 * 60 * 60 * 1000).toISOString(),
-      lastUpdated: new Date(Date.now() - 3600000),
-    },
-  ]);
+  const [cachedCountries, setCachedCountries] = useState<CachedCountry[]>(() => {
+    const cached = loadCountriesFromCache();
+    if (!cached || !cached.countries) {
+      return [];
+    }
+
+    const countries = cached.countries as any[];
+    return countries.map((c) => {
+      const primaryTz = c.timezones && c.timezones[0];
+      const regions = (c.timezones || []).slice(1).map((tz: any, idx: number) => ({
+        id: `${c.id}-r-${idx}`,
+        name: tz.name || tz.id || `Region ${idx + 1}`,
+        timezone: tz.name || tz.id,
+        utcOffset: tz.offset || 'UTC',
+        currentTime: (tz.currentTime && new Date(tz.currentTime).toISOString()) || new Date().toISOString()
+      }));
+
+      return {
+        id: c.id,
+        name: c.name,
+        flag: c.flag,
+        timezone: primaryTz?.name || (regions[0] && regions[0].timezone) || '',
+        utcOffset: primaryTz?.offset || 'UTC',
+        currentTime: (primaryTz?.currentTime && new Date(primaryTz.currentTime).toISOString()) || new Date().toISOString(),
+        lastUpdated: new Date(cached.cachedAt),
+        regions: regions.length ? regions : undefined
+      } as CachedCountry;
+    });
+  });
 
   const searchResults: SearchResult[] = cachedCountries.map((country) => ({
     id: country.id,

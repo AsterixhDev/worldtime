@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import Header from "components/ui/Header";
 import SearchInterface from "components/ui/SearchInterface";
 import BreadcrumbNavigation from "components/ui/BreadcrumbNavigation";
@@ -11,8 +11,11 @@ import LoadingState from "./components/LoadingState";
 import ErrorState from "./components/ErrorState";
 import { CountryTimezoneData, LoadingState as LoadingStateType } from "./types";
 import Navbar from "components/ui/Navbar";
+import { Country } from "pages/world-clock-dashboard/types";
 
 const CountryTimezoneDetails = () => {
+  const location = useLocation();
+  const {country} = (location.state || {}) as {country?:Country};
   const [searchParams] = useSearchParams();
   const [countryData, setCountryData] = useState<CountryTimezoneData | null>(
     null
@@ -219,18 +222,57 @@ const CountryTimezoneDetails = () => {
       setLoadingState({ isLoading: true, error: null, lastUpdated: null });
 
       try {
-        // Simulate API call delay
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        // In a real app, this would fetch data based on searchParams
-        const countryId = searchParams.get("country") || "us";
-
-        // Simulate potential error
-        if (Math.random() < 0.1) {
-          throw new Error("Failed to fetch timezone data from server");
+        const countryCode = searchParams.get("country");
+        if (!countryCode) {
+          throw new Error("No country code provided");
         }
 
-        setCountryData(mockCountryData);
+        let data: CountryTimezoneData;
+        if (country) {
+          // Use passed country data
+          data = {
+            id: country.id,
+            name: country.name,
+            code: country.code,
+            flag: country.flag,
+            flagAlt: '',
+            capital: country.capital || '',
+            population: country.population || 0,
+            area: 0,
+            currency: '',
+            languages: [],
+            regions: [{
+              id: 'all',
+              name: 'All Timezones',
+              type: 'region',
+              timezones: country.timezones.map(tz => ({
+                id: tz.id,
+                name: tz.name,
+                abbreviation: tz.abbreviation,
+                gmtOffset: tz.offset,
+                currentTime: tz.currentTime,
+                isDaylightSaving: tz.isDST,
+                dstTransition: undefined
+              }))
+            }],
+            totalTimezones: country.timezones.length,
+            mainTimezone: country.timezones[0] ? {
+              id: country.timezones[0].id,
+              name: country.timezones[0].name,
+              abbreviation: country.timezones[0].abbreviation,
+              gmtOffset: country.timezones[0].offset,
+              currentTime: country.timezones[0].currentTime,
+              isDaylightSaving: country.timezones[0].isDST,
+              dstTransition: undefined
+            } : null
+          };
+        } else {
+          // Fetch from API
+          const { fetchCountryByCode } = await import("../../utils/restCountries");
+          data = await fetchCountryByCode(countryCode);
+        }
+
+        setCountryData(data);
         setLoadingState({
           isLoading: false,
           error: null,
@@ -238,7 +280,7 @@ const CountryTimezoneDetails = () => {
         });
 
         // Expand first region by default
-        setExpandedRegions(new Set([mockCountryData.regions[0]?.id]));
+        setExpandedRegions(new Set([data.regions[0]?.id]));
       } catch (error) {
         setLoadingState({
           isLoading: false,
@@ -250,7 +292,7 @@ const CountryTimezoneDetails = () => {
     };
 
     loadCountryData();
-  }, [searchParams]);
+  }, [searchParams, country]);
 
   const handleRetry = () => {
     setCountryData(null);

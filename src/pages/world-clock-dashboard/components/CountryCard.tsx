@@ -30,7 +30,7 @@ const CountryCard = ({
 
   const handleCardClick = () => {
     onSelect(country);
-    navigate('/country-timezone-details', { state: { country } });
+    navigate(`/country-timezone-details?country=${country.code}`, { state: { country } });
   };
 
   // Add safety checks for country data
