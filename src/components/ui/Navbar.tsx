@@ -79,7 +79,7 @@ const Navbar: React.FC = () => {
           {/* Footer */}
           <div className="mt-auto pt-4 border-t border-border">
             <div className="text-xs text-muted-foreground text-center">
-              <p>WorldTime Pro v1.0.0</p>
+              <p>TerraTemps v1.0.0</p>
               <p className="mt-1">Global Timezone Management</p>
             </div>
           </div>

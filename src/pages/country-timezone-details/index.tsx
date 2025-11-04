@@ -72,8 +72,11 @@ const CountryTimezoneDetails = () => {
             const response = await fetch(
               `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`
             );
+
+
+
             const locationData = await response.json();
-              console.log(locationData)
+            countryCode = locationData.countryName?.toLowerCase();
           } catch (geoError) {
             throw new Error("No country code provided and unable to determine location. Please provide a country code or allow location access.");
           }

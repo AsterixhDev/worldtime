@@ -15,9 +15,9 @@ const HelpPage: React.FC = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
             <HelpCircle className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="text-4xl font-bold text-foreground mb-4">Help Center — WorldTime</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-4">Help Center — TerraTemps</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Learn how to use WorldTime to track time across the globe. From basic setup to advanced features,
+            Learn how to use TerraTemps to track time across the globe. From basic setup to advanced features,
             find everything you need to make the most of your world clock experience.
           </p>
         </div>
@@ -66,7 +66,7 @@ const HelpPage: React.FC = () => {
 
         <h2 className="prose prose-lg max-w-none">
           <HelpCircle className="w-6 h-6 mr-3 text-primary" />
-          What WorldTime Does
+          What TerraTemps Does
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -251,7 +251,7 @@ const HelpPage: React.FC = () => {
             <div>
               <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">Work Without Internet</h3>
               <p className="text-blue-800 dark:text-blue-200">
-                WorldTime works offline for previously viewed content, so you can check times even without a connection.
+                TerraTemps works offline for previously viewed content, so you can check times even without a connection.
               </p>
             </div>
           </div>
@@ -319,7 +319,7 @@ const HelpPage: React.FC = () => {
             <Settings className="w-6 h-6 text-primary mr-3" />
             <div>
               <h3 className="text-lg font-semibold">Customize Your Experience</h3>
-              <p className="text-muted-foreground">Make WorldTime work the way you want it to.</p>
+              <p className="text-muted-foreground">Make TerraTemps work the way you want it to.</p>
             </div>
           </div>
 
@@ -383,9 +383,9 @@ const HelpPage: React.FC = () => {
           <div className="flex items-start mb-6">
             <Smartphone className="w-8 h-8 text-green-600 dark:text-green-400 mt-1 mr-4" />
             <div>
-              <h3 className="text-xl font-semibold text-green-900 dark:text-green-100 mb-2">Get WorldTime on Your Device</h3>
+              <h3 className="text-xl font-semibold text-green-900 dark:text-green-100 mb-2">Get TerraTemps on Your Device</h3>
               <p className="text-green-800 dark:text-green-200">
-                Install WorldTime as a Progressive Web App for the full native app experience.
+                Install TerraTemps as a Progressive Web App for the full native app experience.
               </p>
             </div>
           </div>
@@ -410,7 +410,7 @@ const HelpPage: React.FC = () => {
                 <span className="text-2xl">3️⃣</span>
               </div>
               <h4 className="font-medium mb-1">Launch from Home Screen</h4>
-              <p className="text-sm text-muted-foreground">Find WorldTime in your app list</p>
+              <p className="text-sm text-muted-foreground">Find TerraTemps in your app list</p>
             </div>
           </div>
 

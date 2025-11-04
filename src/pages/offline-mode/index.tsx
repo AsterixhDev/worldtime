@@ -135,10 +135,10 @@ const OfflineModePage = () => {
   return (
     <>
       <Helmet>
-        <title>Offline Mode - WorldTime Pro</title>
+        <title>Offline Mode - TerraTemps</title>
         <meta
           name="description"
-          content="Access cached timezone data and location-based time information while offline. WorldTime Pro provides essential timezone functionality even without internet connectivity."
+          content="Access cached timezone data and location-based time information while offline. TerraTemps provides essential timezone functionality even without internet connectivity."
         />
         <meta
           name="keywords"

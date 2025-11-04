@@ -1,15 +1,31 @@
 {
-  "short_name": "worldtime-pro",
-  "name": "worldtime-pro",
+  "short_name": "WorldTime Pro",
+  "name": "WorldTime Pro",
+  "description": "Track time across the globe with WorldTime Pro - your personal world clock dashboard",
   "icons": [
     {
-      "src": "no_image-replace.png",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "assets/images/worldtime-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/worldtime-icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/worldtime-icon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#1e40af",
+  "background_color": "#ffffff",
+  "categories": ["productivity", "utilities"],
+  "lang": "en-US"
 }

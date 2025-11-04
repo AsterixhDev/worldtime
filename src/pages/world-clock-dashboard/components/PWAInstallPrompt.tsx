@@ -20,7 +20,7 @@ const PWAInstallPrompt = ({
           
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-foreground text-sm mb-1">
-              Install WorldTime Pro
+              Install TerraTemps
             </h4>
             <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
               Add to your home screen for quick access to world clocks, even when offline.

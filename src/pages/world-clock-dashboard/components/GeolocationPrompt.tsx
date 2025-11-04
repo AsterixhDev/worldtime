@@ -23,7 +23,7 @@ const GeolocationPrompt = ({
           </h3>
           
           <p className="text-muted-foreground text-sm leading-relaxed">
-            Allow WorldTime Pro to access your location to show your local timezone and provide personalized timezone suggestions.
+            Allow TerraTemps to access your location to show your local timezone and provide personalized timezone suggestions.
           </p>
         </div>
 

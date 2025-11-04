@@ -26,7 +26,7 @@ const PreferencesPanel = ({ preferences, onPreferenceChange }: PreferencesPanelP
         <div>
           <h3 className="font-semibold text-foreground">Preferences</h3>
           <p className="text-sm text-muted-foreground">
-            Customize your WorldTime Pro experience
+            Customize your TerraTemps experience
           </p>
         </div>
       </div>

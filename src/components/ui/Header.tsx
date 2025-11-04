@@ -36,7 +36,7 @@ const Header = ({ className = '' }: HeaderProps) => {
       case '/settings':
         return 'Settings';
       default:
-        return 'WorldTime Pro';
+        return 'TerraTemps';
     }
   };
 
@@ -84,7 +84,7 @@ const Header = ({ className = '' }: HeaderProps) => {
               </div>
               <div className="flex flex-col">
                 <span className="text-lg font-semibold text-foreground leading-none">
-                  WorldTime Pro
+                  TerraTemps
                 </span>
                 <span className="text-xs text-muted-foreground leading-none mt-0.5 hidden sm:block">
                   Global Time Zones

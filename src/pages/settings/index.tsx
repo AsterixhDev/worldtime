@@ -35,7 +35,7 @@ const SettingsPage = () => {
 
   // Load settings from localStorage on component mount
   useEffect(() => {
-    const savedSettings = localStorage.getItem('worldtime-settings');
+    const savedSettings = localStorage.getItem('TerraTemps-settings');
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
@@ -62,7 +62,7 @@ const SettingsPage = () => {
 
   // Save settings to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('worldtime-settings', JSON.stringify(settings));
+    localStorage.setItem('TerraTemps-settings', JSON.stringify(settings));
     applyTheme(settings.theme);
     applyColorScheme(settings.colorScheme);
   }, [settings]);
@@ -167,7 +167,7 @@ const SettingsPage = () => {
                 <div>
                   <h1 className="text-3xl font-bold text-foreground">Settings</h1>
                   <p className="text-muted-foreground">
-                    Customize your WorldTime Pro experience
+                    Customize your TerraTemps experience
                   </p>
                 </div>
               </div>
@@ -253,7 +253,7 @@ const SettingsPage = () => {
                   <Icon name="HelpCircle" size={20} className="text-primary" />
                   <div>
                     <h3 className="text-lg font-medium">Help & Support</h3>
-                    <p className="text-sm text-muted-foreground">Open the in-app Help guide to learn how to use WorldTime.</p>
+                    <p className="text-sm text-muted-foreground">Open the in-app Help guide to learn how to use TerraTemps.</p>
                   </div>
                 </div>
 
@@ -274,7 +274,7 @@ const SettingsPage = () => {
             <section className="pt-6 border-t border-border">
               <div className="text-center space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  WorldTime Pro v1.0.0
+                  TerraTemps v1.0.0
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Built with React & TypeScript
