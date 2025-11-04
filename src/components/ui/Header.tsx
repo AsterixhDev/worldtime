@@ -57,8 +57,8 @@ const Header = ({ className = '' }: HeaderProps) => {
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-100 bg-surface border-b border-border ${className}`}>
-        <div className="flex items-center justify-between h-16 px-4 lg:pl-72 lg:pr-6">
-          <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between h-16 px-4">
+          <div className="flex items-center">
             {showBackButton && (
               <Button
                 variant="ghost"

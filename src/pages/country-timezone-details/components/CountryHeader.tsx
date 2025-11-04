@@ -44,7 +44,7 @@ const CountryHeader = ({ country, onBack }: CountryHeaderProps) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[repeat(auto-fit,_minmax(30rem,1fr))] gap-6">
         <div className="lg:col-span-2">
           <div className="flex items-start space-x-4 mb-4">
             <div className="flex-shrink-0">

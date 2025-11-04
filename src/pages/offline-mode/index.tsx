@@ -152,7 +152,7 @@ const OfflineModePage = () => {
 
         <OfflineStatusBanner onRetry={handleRetryConnection} />
 
-        <main className="pt-16">
+        <main className="pt-16 pb-8 lg:pl-72">
           <div className="max-w-7xl mx-auto px-4 py-6 lg:px-6">
             <div className="mb-6">
               <BreadcrumbNavigation customItems={[]} />
@@ -181,7 +181,7 @@ const OfflineModePage = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-[repeat(auto-fit,_minmax(30rem,1fr))] gap-6 mb-8">
               <div className="lg:col-span-2">
                 <OfflineStatusCard
                   status={offlineStatus}
@@ -194,8 +194,8 @@ const OfflineModePage = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              <div className="lg:col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-[repeat(auto-fit,_minmax(30rem,1fr))] gap-6 mb-8">
+              <div>
                 <CachedCountryList countries={cachedCountries} />
               </div>
 

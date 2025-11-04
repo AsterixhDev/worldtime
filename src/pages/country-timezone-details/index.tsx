@@ -46,231 +46,19 @@ const CountryTimezoneDetails = () => {
   };
   // End of added block
 
-  // Mock data for demonstration
-  const mockCountryData: CountryTimezoneData = {
-    id: "us",
-    name: "United States",
-    code: "US",
-    flag: "https://images.unsplash.com/photo-1712022803338-2bca695a9899",
-    flagAlt: "American flag waving against blue sky with white clouds",
-    capital: "Washington, D.C.",
-    population: 331900000,
-    area: 9833517,
-    currency: "USD",
-    languages: ["English"],
-    totalTimezones: 9,
-    mainTimezone: {
-      id: "est",
-      name: "Eastern Standard Time",
-      abbreviation: "EST",
-      gmtOffset: "-5:00",
-      currentTime: new Date(),
-      isDaylightSaving: false,
-      dstTransition: {
-        next: new Date("2024-03-10"),
-        type: "start",
-      },
-    },
-    regions: [
-      {
-        id: "eastern",
-        name: "Eastern Region",
-        type: "region",
-        timezones: [
-          {
-            id: "est",
-            name: "Eastern Standard Time",
-            abbreviation: "EST",
-            gmtOffset: "-5:00",
-            currentTime: new Date(),
-            isDaylightSaving: false,
-            dstTransition: {
-              next: new Date("2024-03-10"),
-              type: "start",
-            },
-          },
-          {
-            id: "edt",
-            name: "Eastern Daylight Time",
-            abbreviation: "EDT",
-            gmtOffset: "-4:00",
-            currentTime: new Date(Date.now() + 3600000),
-            isDaylightSaving: true,
-            dstTransition: {
-              next: new Date("2024-11-03"),
-              type: "end",
-            },
-          },
-        ],
-      },
-      {
-        id: "central",
-        name: "Central Region",
-        type: "region",
-        timezones: [
-          {
-            id: "cst",
-            name: "Central Standard Time",
-            abbreviation: "CST",
-            gmtOffset: "-6:00",
-            currentTime: new Date(Date.now() - 3600000),
-            isDaylightSaving: false,
-          },
-          {
-            id: "cdt",
-            name: "Central Daylight Time",
-            abbreviation: "CDT",
-            gmtOffset: "-5:00",
-            currentTime: new Date(),
-            isDaylightSaving: true,
-            dstTransition: {
-              next: new Date("2024-11-03"),
-              type: "end",
-            },
-          },
-        ],
-      },
-      {
-        id: "mountain",
-        name: "Mountain Region",
-        type: "region",
-        timezones: [
-          {
-            id: "mst",
-            name: "Mountain Standard Time",
-            abbreviation: "MST",
-            gmtOffset: "-7:00",
-            currentTime: new Date(Date.now() - 7200000),
-            isDaylightSaving: false,
-          },
-          {
-            id: "mdt",
-            name: "Mountain Daylight Time",
-            abbreviation: "MDT",
-            gmtOffset: "-6:00",
-            currentTime: new Date(Date.now() - 3600000),
-            isDaylightSaving: true,
-            dstTransition: {
-              next: new Date("2024-11-03"),
-              type: "end",
-            },
-          },
-        ],
-      },
-      {
-        id: "pacific",
-        name: "Pacific Region",
-        type: "region",
-        timezones: [
-          {
-            id: "pst",
-            name: "Pacific Standard Time",
-            abbreviation: "PST",
-            gmtOffset: "-8:00",
-            currentTime: new Date(Date.now() - 10800000),
-            isDaylightSaving: false,
-          },
-          {
-            id: "pdt",
-            name: "Pacific Daylight Time",
-            abbreviation: "PDT",
-            gmtOffset: "-7:00",
-            currentTime: new Date(Date.now() - 7200000),
-            isDaylightSaving: true,
-            dstTransition: {
-              next: new Date("2024-11-03"),
-              type: "end",
-            },
-          },
-        ],
-      },
-      {
-        id: "alaska",
-        name: "Alaska",
-        type: "state",
-        timezones: [
-          {
-            id: "akst",
-            name: "Alaska Standard Time",
-            abbreviation: "AKST",
-            gmtOffset: "-9:00",
-            currentTime: new Date(Date.now() - 14400000),
-            isDaylightSaving: false,
-          },
-        ],
-      },
-      {
-        id: "hawaii",
-        name: "Hawaii",
-        type: "state",
-        timezones: [
-          {
-            id: "hst",
-            name: "Hawaii Standard Time",
-            abbreviation: "HST",
-            gmtOffset: "-10:00",
-            currentTime: new Date(Date.now() - 18000000),
-            isDaylightSaving: false,
-          },
-        ],
-      },
-    ],
-  };
-
   useEffect(() => {
     const loadCountryData = async () => {
       setLoadingState({ isLoading: true, error: null, lastUpdated: null });
 
       try {
-        const countryCode = searchParams.get("country");
+        const countryCode = country?.code || searchParams.get("country");
         if (!countryCode) {
           throw new Error("No country code provided");
         }
 
-        let data: CountryTimezoneData;
-        if (country) {
-          // Use passed country data
-          data = {
-            id: country.id,
-            name: country.name,
-            code: country.code,
-            flag: country.flag,
-            flagAlt: '',
-            capital: country.capital || '',
-            population: country.population || 0,
-            area: 0,
-            currency: '',
-            languages: [],
-            regions: [{
-              id: 'all',
-              name: 'All Timezones',
-              type: 'region',
-              timezones: country.timezones.map(tz => ({
-                id: tz.id,
-                name: tz.name,
-                abbreviation: tz.abbreviation,
-                gmtOffset: tz.offset,
-                currentTime: tz.currentTime,
-                isDaylightSaving: tz.isDST,
-                dstTransition: undefined
-              }))
-            }],
-            totalTimezones: country.timezones.length,
-            mainTimezone: country.timezones[0] ? {
-              id: country.timezones[0].id,
-              name: country.timezones[0].name,
-              abbreviation: country.timezones[0].abbreviation,
-              gmtOffset: country.timezones[0].offset,
-              currentTime: country.timezones[0].currentTime,
-              isDaylightSaving: country.timezones[0].isDST,
-              dstTransition: undefined
-            } : null
-          };
-        } else {
-          // Fetch from API
-          const { fetchCountryByCode } = await import("../../utils/restCountries");
-          data = await fetchCountryByCode(countryCode);
-        }
+        // Always fetch detailed data from API for consistency
+        const { fetchCountryByCode } = await import("../../utils/restCountries");
+        const data = await fetchCountryByCode(countryCode);
 
         setCountryData(data);
         setLoadingState({
@@ -397,7 +185,7 @@ const CountryTimezoneDetails = () => {
       <Header />
       <Navbar />
 
-      <div className="w-full">
+      <div className="pb-8 lg:pl-72 w-full">
         <SearchInterface
           onSearch={handleSearch}
           onResultSelect={handleResultSelect}

@@ -104,7 +104,7 @@ const PreferencesPanel = ({ preferences, onPreferenceChange }: PreferencesPanelP
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,_minmax(30rem,1fr))] gap-2">
             {refreshIntervalOptions.map((option) => (
               <Button
                 key={option.value}

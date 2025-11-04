@@ -187,12 +187,13 @@ export async function fetchAllCountries(): Promise<Country[]> {
 // -------------------- Fetch Single Country --------------------
 
 export async function fetchCountryByCode(code: string) {
-  const url = `https://restcountries.com/v3.1/alpha/${code}?fields=name,cca2,flags,region,subregion,capital,timezones,population,area,currencies,languages`;
+  const url = `https://restcountries.com/v3.1/name/${code}?fields=name,cca2,flags,region,subregion,capital,timezones,population,area,currencies,languages`;
   const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch country details');
   const data = await res.json();
   const c = data[0];
   if (!c) throw new Error('Country not found');
+
 
   const now = new Date();
   const timezoneInfos = (c.timezones || []).map((tz: string) => {
@@ -239,7 +240,6 @@ export async function fetchCountryByCode(code: string) {
   const currencies = c.currencies || {};
   const currency = Object.keys(currencies)[0] || '';
   const languages = Object.values(c.languages || {}).map(lang => String(lang));
-
   return {
     id: c.cca2.toLowerCase(),
     name: c.name.common,
@@ -253,7 +253,15 @@ export async function fetchCountryByCode(code: string) {
     languages,
     regions,
     totalTimezones: timezoneInfos.length,
-    mainTimezone: timezoneInfos[0] || null
+    mainTimezone: timezoneInfos[0] || {
+      id: '',
+      name: '',
+      abbreviation: '',
+      gmtOffset: '',
+      currentTime: now,
+      isDaylightSaving: false,
+      dstTransition: undefined
+    }
   };
 }
 

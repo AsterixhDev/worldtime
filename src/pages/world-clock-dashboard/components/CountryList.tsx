@@ -11,7 +11,7 @@ const CountryList = ({
 }: CountryListProps) => {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[repeat(auto-fit,_minmax(18rem,1fr))] gap-6">
         {Array.from({ length: 12 }).map((_, index) => (
           <CountryCard
             key={index}
@@ -77,7 +77,7 @@ const CountryList = ({
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[repeat(auto-fit,_minmax(18rem,1fr))] gap-6">
         {countries.map((country) => (
           <CountryCard
             key={country.id}
