@@ -51,14 +51,36 @@ const CountryTimezoneDetails = () => {
       setLoadingState({ isLoading: true, error: null, lastUpdated: null });
 
       try {
-        const countryCode = country?.code || searchParams.get("country");
+        let countryCode = country?.code || searchParams.get("country");
+
         if (!countryCode) {
-          throw new Error("No country code provided");
+          // Try to get user's location if no country code is provided
+          try {
+            const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+              if (!navigator.geolocation) {
+                reject(new Error("Geolocation not supported"));
+                return;
+              }
+              navigator.geolocation.getCurrentPosition(resolve, reject, {
+                timeout: 10000,
+                enableHighAccuracy: false
+              });
+            });
+
+            // Use reverse geocoding to get country code from coordinates
+            const response = await fetch(
+              `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`
+            );
+            const locationData = await response.json();
+            countryCode = locationData.countryCode?.toUpperCase();
+          } catch (geoError) {
+            throw new Error("No country code provided and unable to determine location. Please provide a country code or allow location access.");
+          }
         }
 
         // Always fetch detailed data from API for consistency
         const { fetchCountryByCode } = await import("../../utils/restCountries");
-        const data = await fetchCountryByCode(countryCode);
+        const data = await fetchCountryByCode(countryCode!);
 
         setCountryData(data);
         setLoadingState({
