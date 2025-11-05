@@ -30,11 +30,12 @@ const CountryCard = ({
 
   const handleCardClick = () => {
     onSelect(country);
-    navigate(`/country-timezone-details?country=${country.name.toLowerCase()}`, { state: { country } });
+    navigate(`/country-timezone-details?country=${country.code.toLowerCase()}`, { state: { country } });
   };
 
   // Add safety checks for country data
   const primaryTimezone = country?.timezones?.[0];
+  console.log(primaryTimezone)
   const hasMultipleTimezones = country?.timezones && country.timezones.length > 1;
 
   if (isLoading || !country || !primaryTimezone) {
@@ -95,7 +96,6 @@ const CountryCard = ({
 
       <div className="text-center mb-4">
         <ClockDisplay
-          time={primaryTimezone.currentTime}
           timezone={primaryTimezone.name}
           showSeconds={false}
           className="mb-2"

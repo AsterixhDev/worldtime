@@ -34,7 +34,7 @@ function partsFromFormat(date: Date, timeZone: string) {
   return map;
 }
 
-function getOffsetMinutesFor(date: Date, timeZone: string) {
+export function getOffsetMinutesFor(date: Date, timeZone: string) {
   const p = partsFromFormat(date, timeZone);
   const year = Number(p.year);
   const month = Number(p.month) - 1;
@@ -145,7 +145,7 @@ export async function fetchAllCountries(): Promise<Country[]> {
       const res = await fetch(REST_ALL_URL);
       if (!res.ok) throw new Error('Failed to fetch countries');
       const data = await res.json();
-      const now = new Date();
+      const now = new Date(Date.now());
 
       const countries: Country[] = data.map((c: any) => {
         const code = c.cca2 || c.ccn3 || c.cca3 || '';
@@ -187,7 +187,7 @@ export async function fetchAllCountries(): Promise<Country[]> {
 // -------------------- Fetch Single Country --------------------
 
 export async function fetchCountryByCode(code: string) {
-  const url = `https://restcountries.com/v3.1/name/${code}?fields=name,cca2,flags,region,subregion,capital,timezones,population,area,currencies,languages`;
+  const url = `https://restcountries.com/v3.1/alpha/${code}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch country details');
   const data = await res.json();
@@ -224,11 +224,15 @@ export async function fetchCountryByCode(code: string) {
       name: tz,
       abbreviation: safeGetAbbreviation(now, tz),
       gmtOffset: formatOffset(offsetMinutes),
+      offsetMinutes,
       currentTime: now,
       isDaylightSaving: currentIsDST,
       dstTransition
     } as TimezoneInfo;
   });
+
+  // Sort timezones by offset descending
+  timezoneInfos.sort((a: TimezoneInfo, b: TimezoneInfo) => b.offsetMinutes - a.offsetMinutes);
 
   const regions: RegionData[] = [{
     id: 'all',
@@ -237,23 +241,55 @@ export async function fetchCountryByCode(code: string) {
     timezones: timezoneInfos
   }];
 
+  // Select main timezone: prefer highest positive offset, otherwise highest offset
+  const positiveOffsets = timezoneInfos.filter((tz: TimezoneInfo) => tz.offsetMinutes > 0);
+  const mainTz = positiveOffsets.length > 0 ? positiveOffsets[0] : timezoneInfos[0];
+
   const currencies = c.currencies || {};
   const currency = Object.keys(currencies)[0] || '';
   const languages = Object.values(c.languages || {}).map(lang => String(lang));
   return {
     id: c.cca2.toLowerCase(),
     name: c.name.common,
+    officialName: c.name.official,
+    nativeName: c.name.nativeName || {},
     code: c.cca2,
+    cca3: c.cca3 || '',
+    ccn3: c.ccn3 || '',
+    cioc: c.cioc || '',
     flag: c.flags.png || c.flags.svg || '',
     flagAlt: c.flags.alt || '',
     capital: Array.isArray(c.capital) ? c.capital[0] : c.capital || '',
+    altSpellings: c.altSpellings || [],
+    region: c.region || '',
+    subregion: c.subregion || '',
     population: c.population,
     area: c.area || 0,
-    currency,
-    languages,
+    latlng: c.latlng || [0, 0],
+    landlocked: c.landlocked || false,
+    borders: c.borders || [],
+    independent: c.independent || false,
+    status: c.status || '',
+    unMember: c.unMember || false,
+    currencies: c.currencies || {},
+    idd: c.idd || { root: '', suffixes: [] },
+    languages: c.languages || {},
+    demonyms: c.demonyms || {},
+    tld: c.tld || [],
+    car: c.car || { signs: [], side: '' },
+    timezones: c.timezones || [],
+    continents: c.continents || [],
+    fifa: c.fifa || '',
+    startOfWeek: c.startOfWeek || '',
+    capitalInfo: c.capitalInfo || { latlng: [0, 0] },
+    postalCode: c.postalCode || { format: '', regex: '' },
+    gini: c.gini || {},
+    translations: c.translations || {},
+    maps: c.maps || { googleMaps: '', openStreetMaps: '' },
+    coatOfArms: c.coatOfArms || { png: '', svg: '' },
     regions,
     totalTimezones: timezoneInfos.length,
-    mainTimezone: timezoneInfos[0] || {
+    mainTimezone: mainTz || {
       id: '',
       name: '',
       abbreviation: '',

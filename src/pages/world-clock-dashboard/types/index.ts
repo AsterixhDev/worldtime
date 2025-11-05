@@ -29,7 +29,6 @@ export interface SearchResult {
 }
 
 export interface ClockDisplayProps {
-  time: Date;
   timezone: string;
   format24Hour?: boolean;
   showSeconds?: boolean;

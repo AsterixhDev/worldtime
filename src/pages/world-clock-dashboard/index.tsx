@@ -100,30 +100,32 @@ const WorldClockDashboard = () => {
     initializeDashboard();
   }, []);
 
-  // Update clocks every second
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setState(prev => ({
-        ...prev,
-        countries: prev.countries.map(country => ({
-          ...country,
-          timezones: country.timezones.map(tz => ({
-            ...tz,
-            currentTime: new Date(Date.now() + tz.offsetMinutes * 60 * 1000)
-          }))
-        })),
-        filteredCountries: prev.filteredCountries.map(country => ({
-          ...country,
-          timezones: country.timezones.map(tz => ({
-            ...tz,
-            currentTime: new Date(Date.now() + tz.offsetMinutes * 60 * 1000)
-          }))
-        }))
-      }));
-    }, 1000);
+useEffect(() => {
+  const interval = setInterval(() => {
+    const utcNow = Date.now() + new Date().getTimezoneOffset() * 60 * 1000;
 
-    return () => clearInterval(interval);
-  }, []);
+    setState(prev => ({
+      ...prev,
+      countries: prev.countries.map(country => ({
+        ...country,
+        timezones: country.timezones.map(tz => ({
+          ...tz,
+          currentTime: new Date(utcNow + tz.offsetMinutes * 60 * 1000)
+        }))
+      })),
+      filteredCountries: prev.filteredCountries.map(country => ({
+        ...country,
+        timezones: country.timezones.map(tz => ({
+          ...tz,
+          currentTime: new Date(utcNow + tz.offsetMinutes * 60 * 1000)
+        }))
+      }))
+    }));
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, []);
+
 
   // Handle search functionality
   const handleSearch = useCallback((query: string) => {
@@ -158,7 +160,7 @@ const WorldClockDashboard = () => {
 
   const handleCountrySelect = (country: Country) => {
     setState(prev => ({ ...prev, selectedCountry: country }));
-    navigate(`/country-timezone-details?country=${country.name.toLowerCase()}`, { state: { country } });
+    navigate(`/country-timezone-details?country=${country.code.toLowerCase()}`, { state: { country } });
   };
 
   const handleSearchResultSelect = (result: SearchResult) => {

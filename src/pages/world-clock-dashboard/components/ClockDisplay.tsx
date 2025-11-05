@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ClockDisplayProps } from '../types';
+import { useSettings } from '../../../contexts/SettingsContext';
+import { getOffsetMinutesFor } from '../../../utils/restCountries';
 
-// Helper: parse UTC offset like "UTC+03:00" → 180 (minutes)
 function parseUTCOffset(tz: string): number | null {
   const match = tz.match(/^UTC([+-])(\d{1,2})(?::(\d{2}))?$/);
   if (!match) return null;
@@ -11,80 +12,54 @@ function parseUTCOffset(tz: string): number | null {
   return sign * (hours * 60 + minutes);
 }
 
-// Helper: get local time adjusted by offset manually
-function formatTimeWithOffset(
-  date: Date,
-  offsetMinutes: number,
-  showSeconds: boolean,
-  format24Hour: boolean
-): string {
-  const local = new Date(date.getTime() - offsetMinutes * 60000);
-  return local.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    ...(showSeconds && { second: '2-digit' }),
-    hour12: !format24Hour
-  });
+function toFixedOffsetDate(date: Date, offsetMinutes: number): Date {
+  const localOffset = date.getTimezoneOffset(); // e.g. +480 for PST
+  const diff = offsetMinutes - localOffset;
+  return new Date(date.getTime() + diff * 60000);
 }
 
 const ClockDisplay = ({
-  time,
   timezone,
-  format24Hour = false,
+  format24Hour,
   showSeconds = true,
   className = ''
 }: ClockDisplayProps) => {
-  const [currentTime, setCurrentTime] = useState(time);
-
-  useEffect(() => {
-    setCurrentTime(time);
-  }, [time]);
+  const { settings } = useSettings();
+  const [currentTime, setCurrentTime] = useState(() => {
+    const now = new Date();
+    return new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTime((prev) => new Date(prev.getTime() + 1000));
+      const now = new Date();
+      setCurrentTime(new Date(now.getTime() + now.getTimezoneOffset() * 60000));
     }, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  const formatTime = (date: Date) => {
-    const offset = parseUTCOffset(timezone);
-    if (offset !== null) {
-      // Manual offset handling for UTC±hh:mm
-      return formatTimeWithOffset(date, offset, showSeconds, format24Hour);
-    }
+  const tzOffset = parseUTCOffset(timezone) ?? getOffsetMinutesFor(currentTime, timezone);
+  const dateInTargetTz = toFixedOffsetDate(currentTime, tzOffset);
 
-    // IANA timezone support (e.g. "Europe/Paris")
-    const options: Intl.DateTimeFormatOptions = {
-      hour: '2-digit',
-      minute: '2-digit',
-      ...(showSeconds && { second: '2-digit' }),
-      hour12: !format24Hour,
-      timeZone: timezone
-    };
+  const formattedTime = dateInTargetTz.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    ...(showSeconds && { second: '2-digit' }),
+    hour12: settings.preferences.timeFormat === '12',
+    timeZone: 'UTC'
+  });
 
-    try {
-      return date.toLocaleTimeString('en-US', options);
-    } catch {
-      // Fallback to system time if invalid
-      return date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        ...(showSeconds && { second: '2-digit' }),
-        hour12: !format24Hour
-      });
-    }
-  };
+  // Dynamic time-of-day label
+  const hour = dateInTargetTz.getUTCHours();
 
-  const getTimeOfDay = (date: Date) => {
-    const hour = date.getHours();
-    if (hour >= 5 && hour < 12) return 'morning';
-    if (hour >= 12 && hour < 17) return 'afternoon';
-    if (hour >= 17 && hour < 21) return 'evening';
+  const getTimeOfDay = (h: number) => {
+    if (h >= 5 && h < 12) return 'morning';
+    if (h >= 12 && h < 17) return 'afternoon';
+    if (h >= 17 && h < 21) return 'evening';
     return 'night';
   };
 
-  const timeOfDay = getTimeOfDay(currentTime);
+  const timeOfDay = getTimeOfDay(hour);
   const timeColors = {
     morning: 'text-amber-600',
     afternoon: 'text-blue-600',
@@ -97,7 +72,7 @@ const ClockDisplay = ({
       <div
         className={`font-mono text-2xl md:text-3xl font-bold ${timeColors[timeOfDay]} transition-colors duration-300`}
       >
-        {formatTime(currentTime)}
+        {formattedTime}
       </div>
       <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
         {timeOfDay}

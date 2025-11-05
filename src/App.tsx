@@ -1,8 +1,13 @@
 import React from 'react';
 import Routes from './Routes';
+import { SettingsProvider } from './contexts/SettingsContext';
 
 function App() {
-  return <Routes />;
+  return (
+    <SettingsProvider>
+      <Routes />
+    </SettingsProvider>
+  );
 }
 
 export default App;

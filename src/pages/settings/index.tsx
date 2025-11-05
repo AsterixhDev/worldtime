@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SettingsState } from './types';
+import { useSettings } from '../../contexts/SettingsContext';
 import ThemeToggle from './components/ThemeToggle';
 import ColorSchemePicker from './components/ColorSchemePicker';
 import PermissionsPanel from './components/PermissionsPanel';
@@ -14,43 +14,19 @@ import Icon from 'components/AppIcon';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
-  const [settings, setSettings] = useState<SettingsState>({
-    theme: 'light',
-    colorScheme: 'blue',
-    permissions: {
-      location: false,
-      notifications: false,
-      offlineStorage: true,
-    },
-    preferences: {
-      timeFormat: '12',
-      autoLocation: false,
-      refreshInterval: 300,
-    },
-  });
+  const { settings, updateTheme, updateColorScheme, updatePermissions, updatePreferences } = useSettings();
 
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
 
-  // Load settings from localStorage on component mount
+  // Check if app is installable
   useEffect(() => {
-    const savedSettings = localStorage.getItem('TerraTemps-settings');
-    if (savedSettings) {
-      try {
-        const parsed = JSON.parse(savedSettings);
-        setSettings(prev => ({ ...prev, ...parsed }));
-      } catch (error) {
-        console.error('Error loading settings:', error);
-      }
-    }
-
-    // Check if app is installable
     const checkInstallability = () => {
       if ('serviceWorker' in navigator) {
         setIsInstallable(true);
       }
-      
+
       // Check if app is already installed
       if (window.matchMedia('(display-mode: standalone)').matches) {
         setIsInstalled(true);
@@ -60,66 +36,20 @@ const SettingsPage = () => {
     checkInstallability();
   }, []);
 
-  // Save settings to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('TerraTemps-settings', JSON.stringify(settings));
-    applyTheme(settings.theme);
-    applyColorScheme(settings.colorScheme);
-  }, [settings]);
-
-  const applyTheme = (theme: 'light' | 'dark') => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
-
-  const applyColorScheme = (scheme: 'blue' | 'green' | 'purple' | 'orange') => {
-    const root = document.documentElement;
-    
-    switch (scheme) {
-      case 'green': root.style.setProperty('--color-primary', '#10B981');
-        root.style.setProperty('--color-accent', '#8B5CF6');
-        break;
-      case 'purple': root.style.setProperty('--color-primary', '#8B5CF6');
-        root.style.setProperty('--color-accent', '#F59E0B');
-        break;
-      case 'orange': root.style.setProperty('--color-primary', '#EA580C');
-        root.style.setProperty('--color-accent', '#06B6D4');
-        break;
-      default: // blue
-        root.style.setProperty('--color-primary', '#2563EB');
-        root.style.setProperty('--color-accent', '#F59E0B');
-    }
-  };
-
   const handleThemeChange = (theme: 'light' | 'dark') => {
-    setSettings(prev => ({ ...prev, theme }));
+    updateTheme(theme);
   };
 
   const handleColorSchemeChange = (colorScheme: 'blue' | 'green' | 'purple' | 'orange') => {
-    setSettings(prev => ({ ...prev, colorScheme }));
+    updateColorScheme(colorScheme);
   };
 
-  const handlePermissionChange = (permission: keyof SettingsState['permissions'], enabled: boolean) => {
-    setSettings(prev => ({
-      ...prev,
-      permissions: {
-        ...prev.permissions,
-        [permission]: enabled,
-      },
-    }));
+  const handlePermissionChange = (permission: keyof typeof settings.permissions, enabled: boolean) => {
+    updatePermissions({ [permission]: enabled });
   };
 
-  const handlePreferenceChange = (key: keyof SettingsState['preferences'], value: any) => {
-    setSettings(prev => ({
-      ...prev,
-      preferences: {
-        ...prev.preferences,
-        [key]: value,
-      },
-    }));
+  const handlePreferenceChange = (key: keyof typeof settings.preferences, value: any) => {
+    updatePreferences({ [key]: value });
   };
 
   const handleInstallClick = () => {
@@ -127,21 +57,18 @@ const SettingsPage = () => {
   };
 
   const handleResetSettings = () => {
-    const defaultSettings: SettingsState = {
-      theme: 'light',
-      colorScheme: 'blue',
-      permissions: {
-        location: false,
-        notifications: false,
-        offlineStorage: true,
-      },
-      preferences: {
-        timeFormat: '12',
-        autoLocation: false,
-        refreshInterval: 300,
-      },
-    };
-    setSettings(defaultSettings);
+    updateTheme('light');
+    updateColorScheme('blue');
+    updatePermissions({
+      location: false,
+      notifications: false,
+      offlineStorage: true,
+    });
+    updatePreferences({
+      timeFormat: '12',
+      autoLocation: false,
+      refreshInterval: 300,
+    });
     setShowResetModal(false);
   };
 

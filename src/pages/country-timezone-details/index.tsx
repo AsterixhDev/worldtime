@@ -9,6 +9,10 @@ import CountryHeader from "./components/CountryHeader";
 import RegionSection from "./components/RegionSection";
 import LoadingState from "./components/LoadingState";
 import ErrorState from "./components/ErrorState";
+import CountryInfoCard from "./components/CountryInfoCard";
+import CountryStatsCard from "./components/CountryStatsCard";
+import CountryMapCard from "./components/CountryMapCard";
+import CountryCodesCard from "./components/CountryCodesCard";
 import { CountryTimezoneData, LoadingState as LoadingStateType } from "./types";
 import Navbar from "components/ui/Navbar";
 import { Country } from "pages/world-clock-dashboard/types";
@@ -76,7 +80,7 @@ const CountryTimezoneDetails = () => {
 
 
             const locationData = await response.json();
-            countryCode = locationData.countryName?.toLowerCase();
+            countryCode = locationData.countryCode?.toLowerCase();
           } catch (geoError) {
             throw new Error("No country code provided and unable to determine location. Please provide a country code or allow location access.");
           }
@@ -226,6 +230,18 @@ const CountryTimezoneDetails = () => {
 
             <CountryHeader country={countryData} onBack={handleBack} />
 
+            {/* Country Information Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <CountryInfoCard country={countryData} />
+              <CountryStatsCard country={countryData} />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <CountryMapCard country={countryData} />
+              <CountryCodesCard country={countryData} />
+            </div>
+
+            {/* Timezone Information */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-foreground">
