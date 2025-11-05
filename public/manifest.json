@@ -1,6 +1,7 @@
 {
   "short_name": "TerraTemps Pro",
   "name": "TerraTemps Pro",
+  "version": "1.0.0",
   "description": "Track time across the globe with TerraTemps Pro - your personal world clock dashboard",
   "icons": [
     {
