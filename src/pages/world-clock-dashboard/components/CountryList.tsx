@@ -1,13 +1,17 @@
 import React from 'react';
 import { CountryListProps } from '../types';
 import CountryCard from './CountryCard';
+import Button from 'components/ui/Button';
 import Icon from 'components/AppIcon';
 
-const CountryList = ({ 
-  countries, 
-  onCountrySelect, 
-  searchQuery, 
-  isLoading 
+const CountryList = ({
+  countries,
+  onCountrySelect,
+  searchQuery,
+  isLoading,
+  currentPage,
+  totalPages,
+  onPageChange
 }: CountryListProps) => {
   if (isLoading) {
     return (
@@ -88,10 +92,61 @@ const CountryList = ({
         ))}
       </div>
 
-      {countries.length > 0 && (
-        <div className="text-center py-8 border-t border-border">
+      {countries.length > 0 && totalPages > 1 && (
+        <div className="flex items-center justify-between py-6 border-t border-border">
           <div className="text-sm text-muted-foreground">
-            Showing {countries.length} of 195 countries worldwide
+            Page {currentPage} of {totalPages}
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              iconName="ChevronLeft"
+              iconPosition="left"
+            >
+              Previous
+            </Button>
+
+            <div className="flex items-center space-x-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                const pageNum = Math.max(1, Math.min(totalPages - 4, currentPage - 2)) + i;
+                if (pageNum > totalPages) return null;
+
+                return (
+                  <Button
+                    key={pageNum}
+                    variant={pageNum === currentPage ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => onPageChange(pageNum)}
+                    className="w-10 h-10 p-0"
+                  >
+                    {pageNum}
+                  </Button>
+                );
+              })}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              iconName="ChevronRight"
+              iconPosition="right"
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {countries.length > 0 && (
+        <div className="text-center py-4 border-t border-border">
+          <div className="text-sm text-muted-foreground">
+            Showing {countries.length} countries • Page {currentPage} of {totalPages}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
             Times update automatically every second

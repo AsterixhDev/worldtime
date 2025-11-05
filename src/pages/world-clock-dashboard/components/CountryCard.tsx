@@ -35,7 +35,6 @@ const CountryCard = ({
 
   // Add safety checks for country data
   const primaryTimezone = country?.timezones?.[0];
-  console.log(primaryTimezone)
   const hasMultipleTimezones = country?.timezones && country.timezones.length > 1;
 
   if (isLoading || !country || !primaryTimezone) {

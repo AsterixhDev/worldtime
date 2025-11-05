@@ -19,6 +19,8 @@ const SettingsPage = () => {
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState<string | null>(null);
 
   // Check if app is installable
   useEffect(() => {
@@ -70,6 +72,52 @@ const SettingsPage = () => {
       refreshInterval: 300,
     });
     setShowResetModal(false);
+  };
+
+  const handleUpdateWebsite = async () => {
+    if (!('serviceWorker' in navigator)) {
+      setUpdateStatus('Service Worker not supported');
+      return;
+    }
+
+    setIsUpdating(true);
+    setUpdateStatus('Updating website...');
+
+    try {
+      const registration = await navigator.serviceWorker.ready;
+
+      // Send message to service worker to clear cache
+      const messageChannel = new MessageChannel();
+
+      messageChannel.port1.onmessage = (event) => {
+        if (event.data && event.data.type === 'CACHE_CLEARED') {
+          setUpdateStatus('Cache cleared successfully. Reloading...');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }
+      };
+
+      registration.active?.postMessage(
+        { type: 'CLEAR_CACHE' },
+        [messageChannel.port2]
+      );
+
+      // Fallback timeout in case message doesn't come back
+      setTimeout(() => {
+        if (isUpdating) {
+          setUpdateStatus('Update completed. Reloading...');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }
+      }, 3000);
+
+    } catch (error) {
+      console.error('Failed to update website:', error);
+      setUpdateStatus('Failed to update website');
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -165,11 +213,58 @@ const SettingsPage = () => {
                 <Icon name="Sliders" size={24} className="text-primary" />
                 <h2 className="text-xl font-semibold text-foreground">Preferences</h2>
               </div>
-              
+
               <PreferencesPanel
                 preferences={settings.preferences}
                 onPreferenceChange={handlePreferenceChange}
               />
+            </section>
+
+            {/* Website Update Section */}
+            <section>
+              <div className="flex items-center space-x-2 mb-6">
+                <Icon name="RefreshCw" size={24} className="text-primary" />
+                <h2 className="text-xl font-semibold text-foreground">Website Update</h2>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <Icon name="Download" size={20} className="text-primary" />
+                    <div>
+                      <h3 className="text-sm font-medium">Update Website</h3>
+                      <p className="text-xs text-muted-foreground">
+                        Clear cache and reload the latest version from server
+                      </p>
+                    </div>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleUpdateWebsite}
+                    disabled={isUpdating}
+                    iconName={isUpdating ? "Loader2" : "RefreshCw"}
+                    iconPosition="left"
+                    className={isUpdating ? "animate-pulse" : ""}
+                  >
+                    {isUpdating ? "Updating..." : "Update"}
+                  </Button>
+                </div>
+
+                {updateStatus && (
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Icon
+                      name={updateStatus.includes('Failed') ? "AlertCircle" : "CheckCircle"}
+                      size={16}
+                      className={updateStatus.includes('Failed') ? "text-destructive" : "text-success"}
+                    />
+                    <span className={updateStatus.includes('Failed') ? "text-destructive" : "text-success"}>
+                      {updateStatus}
+                    </span>
+                  </div>
+                )}
+              </div>
             </section>
 
             {/* App Information */}

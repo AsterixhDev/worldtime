@@ -5,266 +5,305 @@ import Button from "./Button";
 import Input from "./Input";
 
 export interface SelectOption {
-    value: string | number;
-    label: string;
-    disabled?: boolean;
-    description?: string;
+  value: string | number;
+  label: string;
+  disabled?: boolean;
+  description?: string;
 }
 
-export interface SelectProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'value' | 'onChange' | 'defaultValue'> {
-    options?: SelectOption[];
-    value?: string | number | (string | number)[];
-    defaultValue?: string | number | (string | number)[];
-    placeholder?: string;
-    multiple?: boolean;
-    disabled?: boolean;
-    required?: boolean;
-    label?: string;
-    description?: string;
-    error?: string;
-    searchable?: boolean;
-    clearable?: boolean;
-    loading?: boolean;
-    name?: string;
-    onChange?: (value: any) => void;
-    onOpenChange?: (open: boolean) => void;
+export interface SelectClasses {
+  container?: string;
+  label?: string;
+  trigger?: string;
+  triggerText?: string;
+  icon?: string;
+  dropdown?: string;
+  searchWrapper?: string;
+  searchInput?: string;
+  option?: string;
+  optionSelected?: string;
+  optionDisabled?: string;
+  description?: string;
+  error?: string;
 }
 
-const Select = React.forwardRef<HTMLButtonElement, SelectProps>(({
-    className,
-    options = [],
-    value,
-    defaultValue,
-    placeholder = "Select an option",
-    multiple = false,
-    disabled = false,
-    required = false,
-    label,
-    description,
-    error,
-    searchable = false,
-    clearable = false,
-    loading = false,
-    id,
-    name,
-    onChange,
-    onOpenChange,
-    ...props
-}, ref) => {
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [searchTerm, setSearchTerm] = useState<string>("");
+export interface SelectProps
+  extends Omit<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    "value" | "onChange" | "defaultValue"
+  > {
+  options?: SelectOption[];
+  value?: string | number | (string | number)[];
+  defaultValue?: string | number | (string | number)[];
+  placeholder?: string;
+  multiple?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  label?: string;
+  description?: string;
+  error?: string;
+  searchable?: boolean;
+  clearable?: boolean;
+  loading?: boolean;
+  name?: string;
+  onChange?: (value: any) => void;
+  onOpenChange?: (open: boolean) => void;
+  classes?: SelectClasses;
+}
 
-    // Generate unique ID if not provided
-    const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
+const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
+  (
+    {
+      className,
+      options = [],
+      value,
+      defaultValue,
+      placeholder = "Select an option",
+      multiple = false,
+      disabled = false,
+      required = false,
+      label,
+      description,
+      error,
+      searchable = false,
+      clearable = false,
+      loading = false,
+      id,
+      name,
+      onChange,
+      onOpenChange,
+      classes = {},
+      ...props
+    },
+    ref
+  ) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
-    // Filter options based on search
-    const filteredOptions = searchable && searchTerm
-        ? options.filter(option =>
-            option.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (option.value && option.value.toString().toLowerCase().includes(searchTerm.toLowerCase()))
-        )
+    const selectId = id || `select-${Math.random().toString(36).slice(2, 9)}`;
+
+    const filteredOptions =
+      searchable && searchTerm
+        ? options.filter(
+            (opt) =>
+              opt.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              (opt.value &&
+                opt.value.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+          )
         : options;
 
-    // Get selected option(s) for display
     const getSelectedDisplay = (): string => {
-        if (!value) return placeholder;
-
-        if (multiple) {
-            const valueArray = Array.isArray(value) ? value : [value];
-            const selectedOptions = options.filter(opt => valueArray.includes(opt.value));
-            if (selectedOptions.length === 0) return placeholder;
-            if (selectedOptions.length === 1) return selectedOptions[0].label;
-            return `${selectedOptions.length} items selected`;
-        }
-
-        const selectedOption = options.find(opt => opt.value === value);
-        return selectedOption ? selectedOption.label : placeholder;
+      if (!value) return placeholder;
+      if (multiple) {
+        const arr = Array.isArray(value) ? value : [value];
+        const selected = options.filter((opt) => arr.includes(opt.value));
+        if (selected.length === 0) return placeholder;
+        if (selected.length === 1) return selected[0].label;
+        return `${selected.length} items selected`;
+      }
+      const selected = options.find((opt) => opt.value === value);
+      return selected ? selected.label : placeholder;
     };
 
-    const handleToggle = (): void => {
-        if (!disabled) {
-            const newIsOpen = !isOpen;
-            setIsOpen(newIsOpen);
-            onOpenChange?.(newIsOpen);
-            if (!newIsOpen) {
-                setSearchTerm("");
-            }
-        }
+    const handleToggle = () => {
+      if (disabled) return;
+      const next = !isOpen;
+      setIsOpen(next);
+      onOpenChange?.(next);
+      if (!next) setSearchTerm("");
     };
 
-    const handleOptionSelect = (option: SelectOption): void => {
-        if (multiple) {
-            const currentValue = Array.isArray(value) ? value : [];
-            const updatedValue = currentValue.includes(option.value)
-                ? currentValue.filter(v => v !== option.value)
-                : [...currentValue, option.value];
-            onChange?.(updatedValue);
-        } else {
-            onChange?.(option.value);
-            setIsOpen(false);
-            onOpenChange?.(false);
-        }
+    const handleOptionSelect = (option: SelectOption) => {
+      if (multiple) {
+        const current = Array.isArray(value) ? value : [];
+        const updated = current.includes(option.value)
+          ? current.filter((v) => v !== option.value)
+          : [...current, option.value];
+        onChange?.(updated);
+      } else {
+        onChange?.(option.value);
+        setIsOpen(false);
+        onOpenChange?.(false);
+      }
     };
 
-    const handleClear = (e: React.MouseEvent): void => {
-        e.stopPropagation();
-        onChange?.(multiple ? [] : '');
+    const handleClear = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onChange?.(multiple ? [] : "");
     };
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setSearchTerm(e.target.value);
-    };
-
-    const isSelected = (optionValue: string | number): boolean => {
-        if (multiple) {
-            const valueArray = Array.isArray(value) ? value : [];
-            return valueArray.includes(optionValue);
-        }
-        return value === optionValue;
-    };
+    const isSelected = (optionValue: string | number) =>
+      multiple
+        ? Array.isArray(value) && value.includes(optionValue)
+        : value === optionValue;
 
     const hasValue = multiple
-        ? Array.isArray(value) && value.length > 0
-        : value !== undefined && value !== '';
+      ? Array.isArray(value) && value.length > 0
+      : !!value;
 
     return (
-        <div className={cn("relative", className)}>
-            {label && (
-                <label
-                    htmlFor={selectId}
-                    className={cn(
-                        "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 block",
-                        error ? "text-destructive" : "text-foreground"
-                    )}
-                >
-                    {label}
-                    {required && <span className="text-destructive ml-1">*</span>}
-                </label>
+      <div className={cn("relative w-full", classes.container, className)}>
+        {label && (
+          <label
+            htmlFor={selectId}
+            className={cn(
+              "block mb-1 text-sm font-medium text-foreground",
+              error && "text-destructive",
+              classes.label
             )}
+          >
+            {label}
+            {required && <span className="ml-1 text-destructive">*</span>}
+          </label>
+        )}
 
-            <div className="relative">
-                <button
-                    ref={ref}
-                    id={selectId}
-                    type="button"
-                    className={cn(
-                        "flex h-10 w-full items-center justify-between rounded-md border border-input bg-white text-black px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-                        error && "border-destructive focus:ring-destructive",
-                        !hasValue && "text-muted-foreground"
-                    )}
-                    onClick={handleToggle}
-                    disabled={disabled}
-                    aria-expanded={isOpen}
-                    aria-haspopup="listbox"
-                    {...props}
-                >
-                    <span className="truncate">{getSelectedDisplay()}</span>
+        {/* Trigger Button */}
+        <button
+          ref={ref}
+          id={selectId}
+          type="button"
+          disabled={disabled}
+          onClick={handleToggle}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          className={cn(
+            "relative flex w-full items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-sm transition-all duration-150 hover:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1",
+            disabled && "opacity-50 cursor-not-allowed",
+            error && "border-destructive focus:ring-destructive",
+            classes.trigger
+          )}
+          {...props}
+        >
+          <span
+            className={cn(
+              "truncate text-left",
+              !hasValue && "text-muted-foreground",
+              classes.triggerText
+            )}
+          >
+            {getSelectedDisplay()}
+          </span>
 
-                    <div className="flex items-center gap-1">
-                        {loading && (
-                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                            </svg>
-                        )}
-
-                        {clearable && hasValue && !loading && (
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-4 w-4"
-                                onClick={handleClear}
-                            >
-                                <X className="h-3 w-3" />
-                            </Button>
-                        )}
-
-                        <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
-                    </div>
-                </button>
-
-                {/* Hidden native select for form submission */}
-                <select
-                    name={name}
-                    value={Array.isArray(value) ? value.map(v => String(v)) : value ? String(value) : ''}
-                    onChange={() => { }} // Controlled by our custom logic
-                    className="sr-only"
-                    tabIndex={-1}
-                    multiple={multiple}
-                    required={required}
-                >
-                    <option value="">Select...</option>
-                    {options.map(option => (
-                        <option key={option.value} value={String(option.value)}>
-                            {option.label}
-                        </option>
-                    ))}
-                </select>
-
-                {/* Dropdown */}
-                {isOpen && (
-                    <div className="absolute z-50 w-full mt-1 bg-white text-black border border-border rounded-md shadow-md">
-                        {searchable && (
-                            <div className="p-2 border-b">
-                                <div className="relative">
-                                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                                    <Input
-                                        placeholder="Search options..."
-                                        value={searchTerm}
-                                        onChange={handleSearchChange}
-                                        className="pl-8"
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="py-1 max-h-60 overflow-auto">
-                            {filteredOptions.length === 0 ? (
-                                <div className="px-3 py-2 text-sm text-muted-foreground">
-                                    {searchTerm ? 'No options found' : 'No options available'}
-                                </div>
-                            ) : (
-                                filteredOptions.map((option) => (
-                                    <div
-                                        key={option.value}
-                                        className={cn(
-                                            "relative flex cursor-pointer select-none items-center rounded-sm px-3 py-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
-                                            isSelected(option.value) && "bg-primary text-primary-foreground",
-                                            option.disabled && "pointer-events-none opacity-50"
-                                        )}
-                                        onClick={() => !option.disabled && handleOptionSelect(option)}
-                                    >
-                                        <span className="flex-1">{option.label}</span>
-                                        {multiple && isSelected(option.value) && (
-                                            <Check className="h-4 w-4" />
-                                        )}
-                                        {option.description && (
-                                            <span className="text-xs text-muted-foreground ml-2">
-                                                {option.description}
-                                            </span>
-                                        )}
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
+          <div className="flex items-center gap-1">
+            {clearable && hasValue && !loading && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-5 w-5 p-0 text-muted-foreground hover:text-foreground"
+                onClick={handleClear}
+              >
+                <X className="h-3.5 w-3.5" />
+              </Button>
+            )}
+            {loading ? (
+              <svg
+                className={cn("animate-spin h-4 w-4 text-muted-foreground")}
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4z"
+                />
+              </svg>
+            ) : (
+              <ChevronDown
+                className={cn(
+                  "h-4 w-4 text-muted-foreground transition-transform duration-150",
+                  isOpen && "rotate-180",
+                  classes.icon
                 )}
+              />
+            )}
+          </div>
+        </button>
+
+        {/* Dropdown Panel */}
+        {isOpen && (
+          <div
+            className={cn(
+              "absolute z-50 mt-1 w-full rounded-lg border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-1",
+              classes.dropdown
+            )}
+          >
+            {searchable && (
+              <div
+                className={cn(
+                  "p-2 border-b border-border bg-surface/50 backdrop-blur-sm",
+                  classes.searchWrapper
+                )}
+              >
+                <div className="relative">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className={cn("pl-8", classes.searchInput)}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="p-1 max-h-60 overflow-auto">
+              {filteredOptions.length === 0 ? (
+                <div className="px-3 py-2 text-sm text-muted-foreground">
+                  {searchTerm ? "No results found" : "No options available"}
+                </div>
+              ) : (
+                filteredOptions.map((option) => (
+                  <div
+                    key={option.value}
+                    onClick={() => !option.disabled && handleOptionSelect(option)}
+                    className={cn(
+                      "flex items-center justify-between px-3 py-2 text-sm cursor-pointer rounded-md transition-colors",
+                      option.disabled
+                        ? cn("opacity-50 cursor-not-allowed", classes.optionDisabled)
+                        : cn(
+                            "hover:bg-accent hover:text-accent-foreground",
+                            isSelected(option.value)
+                              ? cn("bg-primary text-primary-foreground", classes.optionSelected)
+                              : cn("text-foreground", classes.option)
+                          )
+                    )}
+                  >
+                    <div className="flex flex-col">
+                      <span className="truncate">{option.label}</span>
+                      {option.description && (
+                        <span className="text-xs text-muted-foreground mt-0.5">
+                          {option.description}
+                        </span>
+                      )}
+                    </div>
+                    {isSelected(option.value) && <Check className="h-4 w-4" />}
+                  </div>
+                ))
+              )}
             </div>
+          </div>
+        )}
 
-            {description && !error && (
-                <p className="text-sm text-muted-foreground mt-1">
-                    {description}
-                </p>
-            )}
-
-            {error && (
-                <p className="text-sm text-destructive mt-1">
-                    {error}
-                </p>
-            )}
-        </div>
+        {description && !error && (
+          <p className={cn("text-xs text-muted-foreground mt-1", classes.description)}>
+            {description}
+          </p>
+        )}
+        {error && (
+          <p className={cn("text-xs text-destructive mt-1", classes.error)}>{error}</p>
+        )}
+      </div>
     );
-});
+  }
+);
 
 Select.displayName = "Select";
 

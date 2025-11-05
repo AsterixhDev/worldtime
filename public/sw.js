@@ -35,10 +35,25 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Message event - handle skip waiting
+// Message event - handle skip waiting and cache clearing
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+  }
+
+  if (event.data && event.data.type === 'CLEAR_CACHE') {
+    event.waitUntil(
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            return caches.delete(cacheName);
+          })
+        );
+      }).then(() => {
+        // Send confirmation back to the client
+        event.ports[0].postMessage({ type: 'CACHE_CLEARED' });
+      })
+    );
   }
 });
 

@@ -65,7 +65,7 @@ const OfflineStatusBanner = ({
   if (!isVisible) return null;
 
   return (
-    <div className={`bg-surface border-b border-border shadow-elevation ${className}`}>
+    <div className={`pt-16 pb-8 lg:pl-72 bg-surface border-b border-border shadow-elevation ${className}`}>
       <div className="max-w-7xl mx-auto px-4 py-3 lg:px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">

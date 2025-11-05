@@ -47,6 +47,9 @@ export interface CountryListProps {
   onCountrySelect: (country: Country) => void;
   searchQuery: string;
   isLoading: boolean;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
 export interface SearchBarProps {
@@ -81,11 +84,12 @@ export interface DashboardState {
   showPWAPrompt: boolean;
   lastUpdated: Date | null;
   error: string | null;
+  filters: DashboardFilters;
 }
 
 export interface DashboardFilters {
   region?: string;
   searchQuery: string;
-  sortBy: 'name' | 'timezone' | 'region';
+  sortBy: 'name' | 'population' | 'landmass' | 'timezones';
   sortOrder: 'asc' | 'desc';
 }
