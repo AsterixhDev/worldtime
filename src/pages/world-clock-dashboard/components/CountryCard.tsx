@@ -123,21 +123,6 @@ const CountryCard = ({
           </div>
         </div>
       )}
-
-      {hasMultipleTimezones && (
-        <div className="mt-3 pt-3 border-t border-border">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full text-accent hover:text-accent-foreground hover:bg-accent/10"
-            iconName="Clock"
-            iconPosition="left"
-            iconSize={14}
-          >
-            View all {country.timezones.length} timezones
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

@@ -50,7 +50,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, onFiltersChange }) => {
   };
 
   return (
-    <div className="sticky top-[6.5rem] z-40 mb-6 bg-surface/80 backdrop-blur-sm border-b border-border/50">
+    <div className="sticky top-32 z-40 mb-6 bg-surface/80 backdrop-blur-sm border-b border-border/50">
       <div
         className="
           max-w-7xl mx-auto 
@@ -70,7 +70,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, onFiltersChange }) => {
         {/* Filters section */}
         <div
           className="
-            flex flex-col sm:flex-row 
+            grid grid-cols-[repeat(auto-fit,_minmax(150px,1fr))] sm:flex sm:flex-row 
             gap-3 sm:gap-4 w-full sm:w-auto
           "
         >

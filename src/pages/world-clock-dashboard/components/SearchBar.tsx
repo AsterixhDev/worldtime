@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { SearchBarProps } from '../types';
-import Input from 'components/ui/Input';
-import Button from 'components/ui/Button';
-import Icon from 'components/AppIcon';
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { SearchBarProps } from "../types";
+import Input from "components/ui/Input";
+import Button from "components/ui/Button";
+import Icon from "components/AppIcon";
 
 const SearchBar = ({
   query,
   onQueryChange,
   onResultSelect,
   isSearching,
-  resultCount
+  resultCount,
 }: SearchBarProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [localQuery, setLocalQuery] = useState(query);
@@ -29,26 +29,26 @@ const SearchBar = ({
       setIsScrolled(scrollTop > scrollThreshold);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
         e.preventDefault();
         inputRef.current?.focus();
       }
-      if (e.key === 'Escape' && isFocused) {
+      if (e.key === "Escape" && isFocused) {
         inputRef.current?.blur();
       }
-      if (e.key === 'Enter' && isFocused) {
+      if (e.key === "Enter" && isFocused) {
         handleSearch();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isFocused]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,27 +60,22 @@ const SearchBar = ({
   };
 
   const handleClear = () => {
-    setLocalQuery('');
-    onQueryChange('');
+    setLocalQuery("");
+    onQueryChange("");
     inputRef.current?.focus();
   };
 
   return (
-    <motion.div
-      className="sticky top-16 z-50 bg-background/95 backdrop-blur-sm border-b border-border"
-      animate={{
-        paddingTop: isScrolled ? 8 : 24,
-        paddingBottom: isScrolled ? 8 : 24,
-      }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+    <div
+      className={`sticky top-16 z-50 bg-background/95 backdrop-blur-sm border-b border-border transition-all duration-300 ${
+        isScrolled ? "py-2" : "py-6"
+      }`}
     >
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
-        <motion.div
-          className="max-w-2xl mx-auto"
-          animate={{
-            maxWidth: isScrolled ? 512 : 672, // max-w-lg = 512px, max-w-2xl = 672px
-          }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
+        <div
+          className={`max-w-2xl mx-auto transition-all duration-300 ${
+            isScrolled ? "max-w-lg" : "max-w-2xl"
+          }`}
         >
           <div className="relative">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
@@ -91,25 +86,18 @@ const SearchBar = ({
               )}
             </div>
 
-            <motion.div
-              animate={{
-                height: isScrolled ? 48 : 56, // h-12 = 48px, h-14 = 56px
-                fontSize: isScrolled ? 14 : 16, // text-sm = 14px, text-base = 16px
-              }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <Input
-                ref={inputRef}
-                type="search"
-                placeholder="Search countries, regions, or timezones..."
-                value={localQuery}
-                onChange={handleInputChange}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                className="w-full pl-12 pr-32 bg-surface shadow-elevation border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl"
-                style={{ height: '100%', fontSize: 'inherit' }}
-              />
-            </motion.div>
+            <Input
+              ref={inputRef}
+              type="search"
+              placeholder="Search countries, regions, or timezones..."
+              value={localQuery}
+              onChange={handleInputChange}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              className={`w-full pl-12 pr-32 bg-surface shadow-elevation border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all duration-300 ${
+                isScrolled ? "h-12 text-sm" : "h-14 text-base"
+              }`}
+            />
 
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-2">
               <Button
@@ -148,60 +136,49 @@ const SearchBar = ({
               <div className="flex items-center space-x-2 text-muted-foreground">
                 <Icon name="Filter" size={16} />
                 <span>
-                  {isSearching ? 'Searching...' : `${resultCount} result${resultCount !== 1 ? 's' : ''} found`}
+                  {isSearching
+                    ? "Searching..."
+                    : `${resultCount} result${
+                        resultCount !== 1 ? "s" : ""
+                      } found`}
                 </span>
               </div>
 
               <div className="text-xs text-muted-foreground">
-                Press <kbd className="px-1 py-0.5 bg-muted rounded font-mono">Enter</kbd> to search or <kbd className="px-1 py-0.5 bg-muted rounded font-mono">Esc</kbd> to clear
+                Press{" "}
+                <kbd className="px-1 py-0.5 bg-muted rounded font-mono">
+                  Enter
+                </kbd>{" "}
+                to search or{" "}
+                <kbd className="px-1 py-0.5 bg-muted rounded font-mono">
+                  Esc
+                </kbd>{" "}
+                to clear
               </div>
             </div>
           )}
 
-          <AnimatePresence>
-            {!query && !isScrolled && (
-              <motion.div
-                className="mt-4 text-center"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              >
-                <div className="flex items-center justify-center space-x-6 text-sm text-muted-foreground">
-                  <motion.div
-                    className="flex items-center space-x-1"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.1, duration: 0.3 }}
-                  >
-                    <Icon name="Zap" size={14} />
-                    <span>Quick search</span>
-                  </motion.div>
-                  <motion.div
-                    className="flex items-center space-x-1"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.2, duration: 0.3 }}
-                  >
-                    <Icon name="Globe" size={14} />
-                    <span>195 countries</span>
-                  </motion.div>
-                  <motion.div
-                    className="flex items-center space-x-1"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3, duration: 0.3 }}
-                  >
-                    <Icon name="Clock" size={14} />
-                    <span>Live updates</span>
-                  </motion.div>
+          {!query && !isScrolled && (
+            <div className="mt-4 text-center">
+              <div className="flex items-center justify-center space-x-6 text-sm text-muted-foreground">
+                <div className="flex items-center space-x-1">
+                  <Icon name="Zap" size={14} />
+                  <span>Quick search</span>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+                <div className="flex items-center space-x-1">
+                  <Icon name="Globe" size={14} />
+                  <span>195 countries</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Icon name="Clock" size={14} />
+                  <span>Live updates</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
