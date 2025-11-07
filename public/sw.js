@@ -1,9 +1,9 @@
-const CACHE_NAME = 'terratemps-v1.0.0';
+const CACHE_NAME = 'WorldTimeSage-v1.0.0';
 const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/assets/images/TerraTemps-icon.svg',
+  '/assets/images/icon-512.png.svg',
   '/assets/images/no_image.png',
   // Add other static assets
 ];

@@ -1,8 +1,8 @@
-# Welcome to TerraTemps — website user guide
+# Welcome to WorldTimeSage — website user guide
 
-This document is a user-facing guide describing what the TerraTemps website does and how to use its features. It's written for visitors and end users, not developers.
+This document is a user-facing guide describing what the WorldTimeSage website does and how to use its features. It's written for visitors and end users, not developers.
 
-## What TerraTemps does
+## What WorldTimeSage does
 
 - Shows the current local time for countries, regions, and timezones worldwide.
 - Lets you build a personalized dashboard of clocks so you can monitor multiple locations at once.
@@ -81,8 +81,8 @@ Open Settings to change preferences. Common options include:
 How to install as an app (PWA)
 
 1. If your browser supports PWA install, the site will show an install prompt in Settings or near the address bar.
-2. Click “Install” and follow the browser prompts to add TerraTemps to your device.
-3. Once installed, TerraTemps behaves like a native app and can be launched from your app list.
+2. Click “Install” and follow the browser prompts to add WorldTimeSage to your device.
+3. Once installed, WorldTimeSage behaves like a native app and can be launched from your app list.
 
 Accessibility and keyboard usage
 

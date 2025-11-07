@@ -129,7 +129,7 @@ const PWAInstallSection = ({ onInstallClick, isInstallable, isInstalled }: PWAIn
         <div>
           <h3 className="font-semibold text-foreground">Install App</h3>
           <p className="text-sm text-muted-foreground">
-            Install TerraTemps on your device
+            Install WorldTimeSage on your device
           </p>
         </div>
       </div>
@@ -141,7 +141,7 @@ const PWAInstallSection = ({ onInstallClick, isInstallable, isInstalled }: PWAIn
               <Icon name="Clock" size={24} color="white" />
             </div>
             <div>
-              <h4 className="font-semibold text-foreground">TerraTemps</h4>
+              <h4 className="font-semibold text-foreground">WorldTimeSage</h4>
               <p className="text-sm text-muted-foreground">
                 Global timezone tracker
               </p>

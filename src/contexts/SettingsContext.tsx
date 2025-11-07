@@ -36,7 +36,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
 
   // Load settings from localStorage on mount
   useEffect(() => {
-    const savedSettings = localStorage.getItem('TerraTemps-settings');
+    const savedSettings = localStorage.getItem('WorldTimeSage-settings');
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
@@ -49,7 +49,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
 
   // Save settings to localStorage and apply theme/color changes
   useEffect(() => {
-    localStorage.setItem('TerraTemps-settings', JSON.stringify(settings));
+    localStorage.setItem('WorldTimeSage-settings', JSON.stringify(settings));
     applyTheme(settings.theme);
     applyColorScheme(settings.colorScheme);
   }, [settings]);

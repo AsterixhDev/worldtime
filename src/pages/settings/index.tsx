@@ -142,7 +142,7 @@ const SettingsPage = () => {
                 <div>
                   <h1 className="text-3xl font-bold text-foreground">Settings</h1>
                   <p className="text-muted-foreground">
-                    Customize your TerraTemps experience
+                    Customize your WorldTimeSage experience
                   </p>
                 </div>
               </div>
@@ -275,7 +275,7 @@ const SettingsPage = () => {
                   <Icon name="HelpCircle" size={20} className="text-primary" />
                   <div>
                     <h3 className="text-lg font-medium">Help & Support</h3>
-                    <p className="text-sm text-muted-foreground">Open the in-app Help guide to learn how to use TerraTemps.</p>
+                    <p className="text-sm text-muted-foreground">Open the in-app Help guide to learn how to use WorldTimeSage.</p>
                   </div>
                 </div>
 
@@ -296,7 +296,7 @@ const SettingsPage = () => {
             <section className="pt-6 border-t border-border">
               <div className="text-center space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  TerraTemps v1.0.0
+                  WorldTimeSage v1.0.0
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Built with React & TypeScript
