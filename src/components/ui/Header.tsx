@@ -74,7 +74,7 @@ const Header = ({ className = '' }: HeaderProps) => {
               className="flex items-center space-x-3 cursor-pointer group"
               onClick={handleLogoClick}
             >
-              <div className="flex items-center justify-center w-8 h-8 bg-primary rounded-lg group-hover:bg-primary/90 transition-smooth">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg transition-smooth">
                 <img src="assets/images/icon-512.png" alt="brand image" className="size-full object-fit object-center"/>
               </div>
               <div className="flex flex-col">
