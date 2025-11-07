@@ -1,26 +1,50 @@
 {
-  "short_name": "WorldTimeSage",
-  "name": "WorldTimeSage",
-  "version": "1.0.0",
-  "description": "Track time across the globe with WorldTimeSage - your personal world clock dashboard",
-  "icons": [
-    {
-      "src": "assets/images/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "assets/images/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "start_url": "/",
-  "display": "standalone",
-  "theme_color": "#1e40af",
-  "background_color": "#ffffff",
-  "categories": ["productivity", "utilities"],
-  "lang": "en-US"
+"short_name": "WorldTimeSage",
+"name": "WorldTimeSage",
+"version": "1.0.0",
+"description": "Track time across the globe with WorldTimeSage, your personal world clock dashboard",
+"author": "Peter Paul (Asterixh)",
+"homepage_url": "https://worldtime-sage.vercel.app",
+"icons": [
+{
+"src": "assets/images/icon-192.png",
+"sizes": "192x192",
+"type": "image/png",
+"purpose": "any maskable"
+},
+{
+"src": "assets/images/icon-512.png",
+"sizes": "512x512",
+"type": "image/png",
+"purpose": "any maskable"
+}
+],
+"screenshots": [
+{
+"src": "assets/images/screenshot (1).png",
+"sizes": "428x926",
+"type": "image/png"
+},
+{
+"src": "assets/images/screenshot (2).png",
+"sizes": "1280x800",
+"type": "image/png"
+},
+{
+"src": "assets/images/screenshot (3).png",
+"sizes": "1280x800",
+"type": "image/png"
+},
+{
+"src": "assets/images/screenshot (4).png",
+"sizes": "390x844",
+"type": "image/png"
+}
+],
+"start_url": "/",
+"display": "standalone",
+"theme_color": "#062153",
+"background_color": "#ffffff",
+"categories": ["productivity", "utilities"],
+"lang": "en-US"
 }
