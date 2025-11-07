@@ -75,12 +75,7 @@ const Header = ({ className = '' }: HeaderProps) => {
               onClick={handleLogoClick}
             >
               <div className="flex items-center justify-center w-8 h-8 bg-primary rounded-lg group-hover:bg-primary/90 transition-smooth">
-                <Icon 
-                  name="Clock" 
-                  size={20} 
-                  color="white" 
-                  strokeWidth={2.5}
-                />
+                <img src="assets/images/icon-512.png" alt="brand image" className="size-full object-fit object-center"/>
               </div>
               <div className="flex flex-col">
                 <span className="text-lg font-semibold text-foreground leading-none">
