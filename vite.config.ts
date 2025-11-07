@@ -17,4 +17,9 @@ export default defineConfig({
       'components/': path.resolve(__dirname, 'src/components') + '/',
     },
   },
+  server: {
+    headers: {
+      "/manifest.json": "application/manifest+json"
+    }
+  }
 });
